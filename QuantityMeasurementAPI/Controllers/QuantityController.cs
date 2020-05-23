@@ -11,5 +11,7 @@ namespace QuantityMeasurementAPI.Controllers
     [ApiController]
     public class QuantityController : ControllerBase
     {
+        public QuantityController()
+        { }
     }
 }
