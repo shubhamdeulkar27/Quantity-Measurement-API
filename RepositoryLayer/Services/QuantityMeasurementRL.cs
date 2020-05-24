@@ -17,31 +17,59 @@ namespace RepositoryLayer.Services
 
         public QuantityModel Add(QuantityModel quantity)
         {
-            dBContext.Quantities.Add(quantity);
-            dBContext.SaveChanges();
-            return quantity;
+            try
+            {
+                dBContext.Quantities.Add(quantity);
+                dBContext.SaveChanges();
+                return quantity;
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
         }
 
         public QuantityModel Delete(int Id)
         {
-            QuantityModel quantity = dBContext.Quantities.Find(Id);
-            if (quantity != null)
+            try
             {
-                dBContext.Quantities.Remove(quantity);
-                dBContext.SaveChanges();
+                QuantityModel quantity = dBContext.Quantities.Find(Id);
+                if (quantity != null)
+                {
+                    dBContext.Quantities.Remove(quantity);
+                    dBContext.SaveChanges();
+                }
+                return quantity;
             }
-            return quantity;
+            catch (Exception exception)
+            {
+                throw exception;
+            }
         }
 
         public IEnumerable<QuantityModel> GetQuantities()
         {
-            return dBContext.Quantities;
+            try
+            {
+                return dBContext.Quantities;
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
         }
 
         public QuantityModel GetQuantity(int Id)
         {
-            QuantityModel quantity = dBContext.Quantities.Find(Id);
-            return quantity;
+            try
+            {
+                QuantityModel quantity = dBContext.Quantities.Find(Id);
+                return quantity;
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
         }
     }
 }

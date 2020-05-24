@@ -1,5 +1,6 @@
 ﻿namespace CommonLayer.Model
 {
+
     /// <summary>
     /// Enum For Length Conversion Operations. 
     /// </summary>
@@ -14,7 +15,7 @@
     /// </summary>
     public enum Weight
     { 
-        GramToKilogram, GramtoTonne, KilogramToGram,
+        GramToKilogram, GramToTonne, KilogramToGram,
         KilogramToTonne, TonneToGram, TonneToKilogram
     }
 
