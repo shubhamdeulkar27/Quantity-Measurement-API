@@ -11,5 +11,6 @@ namespace BusinessLayer.Interface
         IEnumerable<QuantityModel> GetQuantities();
         QuantityModel Convert(QuantityModel quantity);
         QuantityModel Delete(int Id);
+        decimal Calculate(QuantityModel quantity);
     }
 }

@@ -14,5 +14,7 @@ namespace RepositoryLayer
         }
 
         public DbSet<QuantityModel> Quantities { get; set; }
+
+        public DbSet<ComparisonModel> Comparisons { get; set; }
     }
 }

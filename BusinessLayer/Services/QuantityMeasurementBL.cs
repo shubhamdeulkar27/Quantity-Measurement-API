@@ -21,7 +21,11 @@ namespace BusinessLayer.Services
             try
             {
                 quantity.Result = Calculate(quantity);
-                return this.quantityMeasurementRL.Add(quantity);
+                if (quantity.Result > 0)
+                {
+                    return this.quantityMeasurementRL.Add(quantity);
+                }
+                return quantity;
             }
             catch (Exception exception)
             {
@@ -71,98 +75,81 @@ namespace BusinessLayer.Services
             {
                 string operation = quantity.OperationType;
                 decimal value = quantity.Value;
-                decimal result = 0;
+                decimal result= quantity.Result;
+                const decimal INCH_TO_FEET = 12;
+                const decimal INCH_TO_YARD = 36;
+                const decimal FEET_TO_INCH = 12;
+                const decimal FEET_TO_YARD = 3;
+                const decimal YARD_TO_INCH = 36;
+                const decimal YARD_TO_FEET = 3;
+                const decimal WEIGHT_CONSTANT = 1000;
+                const decimal VOLUME_CONSTANT = 1000;
 
-                Type type = quantity.OperationType.GetType();
-                if (type == typeof(Length))
+                if (operation == Length.InchToFeet.ToString())
                 {
-                    const decimal INCH_TO_FEET = 12;
-                    const decimal INCH_TO_YARD = 36;
-                    const decimal FEET_TO_INCH = 12;
-                    const decimal FEET_TO_YARD = 3;
-                    const decimal YARD_TO_INCH = 36;
-                    const decimal YARD_TO_FEET = 3;
-
-                    if (operation == Length.InchToFeet.ToString())
-                    {
-                        result = value / INCH_TO_FEET;
-                    }
-                    else if (operation == Length.InchToYard.ToString())
-                    {
-                        result = value / INCH_TO_YARD;
-                    }
-                    else if (operation == Length.FeetToInch.ToString())
-                    {
-                        result = value * FEET_TO_INCH;
-                    }
-                    else if (operation == Length.FeetToYard.ToString())
-                    {
-                        result = value / FEET_TO_YARD;
-                    }
-                    else if (operation == Length.YardToInch.ToString())
-                    {
-                        result = value * YARD_TO_INCH;
-                    }
-                    else if (operation == Length.YardToFeet.ToString())
-                    {
-                        result = value * YARD_TO_FEET;
-                    }
+                    result = value / INCH_TO_FEET;
                 }
-                else if (type == typeof(Weight))
+                else if (operation == Length.InchToYard.ToString())
                 {
-                    const decimal WEIGHT_CONSTANT = 1000;
-
-                    if (operation == Weight.GramToKilogram.ToString())
-                    {
-                        result = value / WEIGHT_CONSTANT;
-                    }
-                    else if (operation == Weight.GramToTonne.ToString())
-                    {
-                        result = value / (WEIGHT_CONSTANT * WEIGHT_CONSTANT);
-                    }
-                    else if (operation == Weight.KilogramToGram.ToString())
-                    {
-                        result = value * WEIGHT_CONSTANT;
-                    }
-                    else if (operation == Weight.KilogramToTonne.ToString())
-                    {
-                        result = value / WEIGHT_CONSTANT;
-                    }
-                    else if (operation == Weight.TonneToGram.ToString())
-                    {
-                        result = value * (WEIGHT_CONSTANT * WEIGHT_CONSTANT);
-                    }
-                    else if (operation == Weight.TonneToKilogram.ToString())
-                    {
-                        result = value * WEIGHT_CONSTANT;
-                    }
+                    result = value / INCH_TO_YARD;
                 }
-                else if (type == typeof(Volume))
+                else if (operation == Length.FeetToInch.ToString())
                 {
-                    const decimal VOLUME_CONSTANT = 1000;
-
-                    if (operation == Volume.MillilitreToLitre.ToString())
-                    {
-                        result = value / VOLUME_CONSTANT;
-                    }
-                    else
-                    {
-                        result = value * VOLUME_CONSTANT;
-                    }
+                    result = value * FEET_TO_INCH;
                 }
-                else if (type == typeof(Temperature))
+                else if (operation == Length.FeetToYard.ToString())
                 {
-                    if (operation == Temperature.FahrenheitToCelsius.ToString())
-                    {
-                        result = (value - 32) * 5 / 9;
-                    }
-                    else if (operation == Temperature.CelsiusToFahrenheit.ToString())
-                    {
-                        result = (value * 9 / 5) + 32;
-                    }
+                    result = value / FEET_TO_YARD;
                 }
-
-                return result;
+                else if (operation == Length.YardToInch.ToString())
+                {
+                    result = value * YARD_TO_INCH;
+                }
+                else if (operation == Length.YardToFeet.ToString())
+                {
+                    result = value * YARD_TO_FEET;
+                }
+                else if (operation == Weight.GramToKilogram.ToString())
+                {
+                    result = value / WEIGHT_CONSTANT;
+                }
+                else if (operation == Weight.GramToTonne.ToString())
+                {
+                    result = value / (WEIGHT_CONSTANT * WEIGHT_CONSTANT);
+                }
+                else if (operation == Weight.KilogramToGram.ToString())
+                {
+                    result = value * WEIGHT_CONSTANT;
+                }
+                else if (operation == Weight.KilogramToTonne.ToString())
+                {
+                    result = value / WEIGHT_CONSTANT;
+                }
+                else if (operation == Weight.TonneToGram.ToString())
+                {
+                    result = value * (WEIGHT_CONSTANT * WEIGHT_CONSTANT);
+                }
+                else if (operation == Weight.TonneToKilogram.ToString())
+                {
+                    result = value * WEIGHT_CONSTANT;
+                }
+                else if (operation == Volume.MillilitreToLitre.ToString())
+                {
+                    result = value / VOLUME_CONSTANT;
+                }
+                else if (operation == Volume.LitreToMillilitre.ToString())
+                {
+                    result = value * VOLUME_CONSTANT;
+                }
+                else if (operation == Temperature.FahrenheitToCelsius.ToString())
+                {
+                    result = (value - 32) * 5 / 9;
+                }
+                else if (operation == Temperature.CelsiusToFahrenheit.ToString())
+                {
+                    result = (value * 9 / 5) + 32;
+                }
+                return Math.Round(result,2);
             }
             catch (Exception exception)
             {
