@@ -6,6 +6,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CommonLayer.Model
 {
+    /// <summary>
+    /// Model Class For Comparison Details.
+    /// </summary>
     public class ComparisonModel
     {
         [Key]
@@ -30,7 +33,6 @@ namespace CommonLayer.Model
         [RegularExpression(@"^[A-Z][a-zA-Z]*$")]
         public string Value_Two_Unit { get; set; }
 
-        [Required]
         public string Result { get; set; }
     }
 }

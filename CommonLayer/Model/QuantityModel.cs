@@ -7,7 +7,7 @@ using System.Text;
 namespace CommonLayer.Model
 {
     /// <summary>
-    /// Model Class For Quantity.
+    /// Model Class For Conversion Details.
     /// </summary>
     public class QuantityModel
     {
