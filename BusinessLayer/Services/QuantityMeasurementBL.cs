@@ -13,6 +13,13 @@ namespace BusinessLayer.Services
     /// </summary>
     public class QuantityMeasurementBL : IQuantityMeasurementBL
     {
+        //Constants.
+        const decimal INCH_FEET_CONSTANT = 12;
+        const decimal INCH_YARD_CONSTANT = 36;
+        const decimal FEET_YARD_CONSTANT = 3;
+        const decimal WEIGHT_CONSTANT = 1000;
+        const decimal VOLUME_CONSTANT = 1000;
+
         /// <summary>
         /// Repository Layer Reference.
         /// </summary>
@@ -111,12 +118,7 @@ namespace BusinessLayer.Services
                 string operation = quantity.OperationType;
                 decimal value = quantity.Value;
                 decimal result= quantity.Result;
-                const decimal INCH_FEET_CONSTANT = 12;
-                const decimal INCH_YARD_CONSTANT = 36;
-                const decimal FEET_YARD_CONSTANT = 3;
-                const decimal WEIGHT_CONSTANT = 1000;
-                const decimal VOLUME_CONSTANT = 1000;
-
+                
                 if (operation == Length.InchToFeet.ToString())
                 {
                     result = value / INCH_FEET_CONSTANT;
@@ -282,7 +284,7 @@ namespace BusinessLayer.Services
                 if (comparison1.Value_One_Unit == Unit.Inch.ToString() && comparison1.Value_Two_Unit == Unit.Inch.ToString()
                     || comparison1.Value_One_Unit == Unit.Gram.ToString() && comparison1.Value_Two_Unit == Unit.Gram.ToString()
                     || comparison1.Value_One_Unit == Unit.Millilitre.ToString() && comparison1.Value_Two_Unit == Unit.Millilitre.ToString()
-                    || comparison1.Value_One_Unit == Unit.Fahreneit.ToString() && comparison1.Value_Two_Unit == Unit.Fahreneit.ToString())
+                    || comparison1.Value_One_Unit == Unit.Fahrenheit.ToString() && comparison1.Value_Two_Unit == Unit.Fahrenheit.ToString())
                 {
                     if (comparison1.Value_One == comparison1.Value_Two)
                     {
@@ -290,11 +292,11 @@ namespace BusinessLayer.Services
                     }
                     else if (comparison1.Value_One > comparison1.Value_Two)
                     {
-                        result = $"{comparison.Value_One} Is Greater Than {comparison.Value_Two}";
+                        result = $"{comparison.Value_One} {comparison.Value_One_Unit} Is Greater Than {comparison.Value_Two} {comparison.Value_Two_Unit} ";
                     }
                     else if (comparison1.Value_One < comparison1.Value_Two)
                     {
-                        result = $"{comparison.Value_One} Is Less Than {comparison.Value_Two}";
+                        result = $"{comparison.Value_One} {comparison.Value_One_Unit} Is Less Than {comparison.Value_Two} {comparison.Value_Two_Unit}";
                     }
                 }
                 return result;
@@ -314,30 +316,53 @@ namespace BusinessLayer.Services
         {
             try
             {
+                //Checking If Data Is In Base Unit.
                 if (comparison.Value_One_Unit==Unit.Inch.ToString() && comparison.Value_Two_Unit==Unit.Inch.ToString()
                     || comparison.Value_One_Unit == Unit.Gram.ToString() && comparison.Value_Two_Unit == Unit.Gram.ToString()
                     || comparison.Value_One_Unit == Unit.Millilitre.ToString() && comparison.Value_Two_Unit == Unit.Millilitre.ToString()
-                    || comparison.Value_One_Unit == Unit.Fahreneit.ToString() && comparison.Value_Two_Unit == Unit.Fahreneit.ToString())
+                    || comparison.Value_One_Unit == Unit.Fahrenheit.ToString() && comparison.Value_Two_Unit == Unit.Fahrenheit.ToString())
                 {
                     return comparison;
                 }
+                
+                //Creating QuantityModel Instances For Base Unit Conversions.
                 QuantityModel quantityOne = new QuantityModel();
                 QuantityModel quantityTwo = new QuantityModel();
                 quantityOne.Value = comparison.Value_One;
                 quantityTwo.Value = comparison.Value_Two;
 
+                //Setting Operation Type.
                 quantityOne.OperationType = SetOperationType(comparison.Value_One_Unit);
                 quantityTwo.OperationType = SetOperationType(comparison.Value_Two_Unit);
 
-                quantityOne.Result = Calculate(quantityOne);
-                quantityTwo.Result = Calculate(quantityTwo);
+                //If Both Quantity Instance Unit Are Not Base Units Then Perform Conversion.
+                if (quantityOne.OperationType != "BaseUnit" && quantityTwo.OperationType != "BaseUnit")
+                {
+                    quantityOne.Result = Calculate(quantityOne);
+                    quantityTwo.Result = Calculate(quantityTwo);
 
-                comparison.Value_One = quantityOne.Result;
-                comparison.Value_Two = quantityTwo.Result;
+                    comparison.Value_One = quantityOne.Result;
+                    comparison.Value_Two = quantityTwo.Result;
 
-                comparison.Value_One_Unit = SetBaseUnit(quantityOne);
-                comparison.Value_Two_Unit = SetBaseUnit(quantityTwo);
+                    comparison.Value_One_Unit = SetBaseUnit(quantityOne);
+                    comparison.Value_Two_Unit = SetBaseUnit(quantityTwo);
+                }
 
+                //If First Quantity Instance is in Base Unit Than Perform Conversion On Second Instance.
+                else if (quantityOne.OperationType == "BaseUnit" && quantityTwo.OperationType != "BaseUnit")
+                {
+                    quantityTwo.Result = Calculate(quantityTwo);
+                    comparison.Value_Two = quantityTwo.Result;
+                    comparison.Value_Two_Unit = SetBaseUnit(quantityTwo);
+                }
+
+                //If Second Quantity Instance is in Base Unit Than Perform Conversion On First Instance.
+                else if (quantityOne.OperationType != "BaseUnit" && quantityTwo.OperationType == "BaseUnit")
+                {
+                    quantityOne.Result = Calculate(quantityOne);
+                    comparison.Value_One = quantityOne.Result;
+                    comparison.Value_One_Unit = SetBaseUnit(quantityOne);
+                }
                 return comparison;
             }
             catch (Exception exception)
@@ -391,6 +416,11 @@ namespace BusinessLayer.Services
             try
             {
                 string operationType = "";
+                if (Unit_Value == Unit.Gram.ToString() || Unit_Value == Unit.Inch.ToString() 
+                    || Unit_Value == Unit.Millilitre.ToString() || Unit_Value == Unit.Fahrenheit.ToString() )
+                {
+                    operationType = "BaseUnit";
+                }
                 if (Unit_Value == Unit.Feet.ToString())
                 {
                     operationType = "FeetToInch";

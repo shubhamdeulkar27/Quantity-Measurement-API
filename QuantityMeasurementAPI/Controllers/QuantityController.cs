@@ -44,16 +44,16 @@ namespace QuantityMeasurementAPI.Controllers
                 }
                 
                 //Calling Convert Function Of BL.
-                quantity = quantityMeasurementBL.Convert(quantity);
+                QuantityModel quantity1 = quantityMeasurementBL.Convert(quantity);
 
                 //Returning Response.
-                if (quantity.Result != 0)
+                if (quantity1.Result != 0)
                 {
-                    return Ok(new { Success = true, Message = "Conversion Successful", Data = quantity });
+                    return Ok(new { Success = true, Message = "Conversion Successful", Data = quantity1 });
                 }
                 else
                 {
-                    return Ok(new { Success = false, Message = "Conversion Failed", Data = quantity });
+                    return Ok(new { Success = false, Message = "Conversion Failed", Data = quantity1 });
                 }
             }
             catch (Exception exception)
@@ -96,7 +96,7 @@ namespace QuantityMeasurementAPI.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        [HttpGet("Id")]
+        [HttpGet("{Id}")]
         public IActionResult GetQuantity([FromRoute]int Id)
         {
             try
@@ -132,7 +132,7 @@ namespace QuantityMeasurementAPI.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        [HttpDelete("Id")]
+        [HttpDelete("{Id}")]
         public IActionResult Delete([FromRoute]int Id)
         {
             try
@@ -180,16 +180,16 @@ namespace QuantityMeasurementAPI.Controllers
                 }
 
                 //Calling Add Comparison From BL.
-                comparison = quantityMeasurementBL.AddComparison(comparison);
+                ComparisonModel comparison1 = quantityMeasurementBL.AddComparison(comparison);
 
                 //Returning Response.
-                if (comparison.Result != "" && comparison.Result != null)
+                if (comparison.Result != null)
                 {
-                    return Ok(new { Success = true, Message = "Comparison Successful", Data = comparison });
+                    return Ok(new { Success = true, Message = "Comparison Successful", Data = comparison1 });
                 }
                 else
                 {
-                    return Ok(new { Success = false, Message = "Comparison Failed", Data = comparison });
+                    return Ok(new { Success = false, Message = "Comparison Failed", Data = comparison1 });
                 }
             }            
             catch (Exception exception)
@@ -285,12 +285,11 @@ namespace QuantityMeasurementAPI.Controllers
                 //Returning Response.
                 if (comparison != null)
                 {
-                    return Ok(new { Success = true, Message = "Comparisons Data Fetched Successfully", Data = comparison });
+                    return Ok(new { Success = true, Message = "Comparisons Data Deleted Successfully", Data = comparison });
                 }
                 else
                 {
-                    return Ok(new { Success = false, Message = "Conversions Data Fetched Failed", Data = comparison });
-
+                    return Ok(new { Success = false, Message = "Conversions Data Deletion Failed", Data = comparison });
                 }
             }
             catch (Exception exception)

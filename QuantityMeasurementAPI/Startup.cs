@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using RepositoryLayer;
 using RepositoryLayer.Interface;
 using RepositoryLayer.Services;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace QuantityMeasurementAPI
 {
@@ -35,6 +36,19 @@ namespace QuantityMeasurementAPI
             services.AddScoped<IQuantityMeasurementBL, QuantityMeasurementBL>();
             services.AddScoped<IQuantityMeasurementRL, QuantityMeasurementRL>();
             services.AddDbContextPool<QuantityDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("QuantityConnectionString")));
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { 
+                Version= "v1",
+                    Title = "Quantity Measurement API",
+                    Description = "Asp.NET Core API",
+                    TermsOfService = "None",
+                    Contact= new Contact()
+                    { 
+                        Name = "Shubham Deulkar", Email="shubhamdeulkar27@gmail.com"
+                    }
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +65,10 @@ namespace QuantityMeasurementAPI
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Quantity Measurement API V1");
+            });
         }
     }
 }

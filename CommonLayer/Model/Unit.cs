@@ -8,6 +8,6 @@
         Inch, Feet, Yard,
         Gram, Kilogram, Tonne,
         Litre, Millilitre,
-        Celsius, Fahreneit
+        Celsius, Fahrenheit
     }
 }
